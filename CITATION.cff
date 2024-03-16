@@ -1,0 +1,18 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: regressionRelLoc
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Steven John
+    family-names: Gibbons
+    email: steven.gibbons@ngi.no
+    affiliation: Norwegian Geotechnical Institute
+    orcid: 'https://orcid.org/0000-0002-7822-0244'
+repository-code: >-
+  https://github.com/stevenjgibbons/regressionRelLoc
+license: GNU General Public License v3.0
