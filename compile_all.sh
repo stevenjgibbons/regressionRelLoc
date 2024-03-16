@@ -1,0 +1,23 @@
+#!/bin/sh
+cd SUBS
+make
+cd ..
+if test ! -r subslib.a
+then
+  echo "Failed to create library subslib.a"
+fi
+make oneEventPairVectorSolve
+make oneSlovecPairVectorSolve
+for file in \
+   bin/oneEventPairVectorSolve \
+   bin/oneSlovecPairVectorSolve
+do
+  if test ! -r $file
+  then
+    echo Failed to create executable $file
+  fi
+  chmod 755 $file
+done
+chmod 755 run_Finland_two_slovecs.sh
+chmod 755 run_DPRK_two_events.sh
+chmod 755 run_Finland_two_events.sh
