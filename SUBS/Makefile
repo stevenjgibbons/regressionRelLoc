@@ -2,6 +2,7 @@
 ALLSOURCECODE=  \
 	csargm.f \
 	dtlnrd.f \
+	eabslf.f \
 	indlef.f \
 	indlsf.f \
 	irlsra.f \
