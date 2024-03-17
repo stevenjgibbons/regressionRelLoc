@@ -8,9 +8,11 @@ then
 fi
 make oneEventPairVectorSolve
 make oneSlovecPairVectorSolve
+make fixedSlovecsEventSolve
 for file in \
    bin/oneEventPairVectorSolve \
-   bin/oneSlovecPairVectorSolve
+   bin/oneSlovecPairVectorSolve \
+   bin/fixedSlovecsEventSolve
 do
   if test ! -r $file
   then
@@ -21,3 +23,5 @@ done
 chmod 755 run_Finland_two_slovecs.sh
 chmod 755 run_DPRK_two_events.sh
 chmod 755 run_Finland_two_events.sh
+chmod 755 run_DPRK_abs_events.sh
+chmod 755 run_Finland_abs_events.sh
