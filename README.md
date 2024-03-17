@@ -27,6 +27,12 @@ Here we assume a fixed set of event coordinates (specified as x and y in km) and
 It will return (sx_j - sx_i, sy_j - sy_i ) in seconds per km.  
 (see the script *run_Finland_two_slovecs.sh*).  
 
+```
+fixedSlovecsEventSolve
+```
+Here we assume a fixed set of slowness vectors and specify a reference event. It then solves for the locations of the other events relative to this event.
+(See the scripts *run_Finland_and_events.sh* and *run_DPRK_and_events.sh*)
+
 **Compiling instructions**  
 
 (1) Edit Makefile to sensure that the LAPACK and BLAS libraries exist. e.g.  
