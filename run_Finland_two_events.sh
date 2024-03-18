@@ -36,7 +36,7 @@ do
 done
 nsp=`wc ${slovecsfile} | awk '{print $1}'`
 nev=`wc ${locationsfile} | awk '{print $1}'`
-infile=oneEventPairVectorSolve.input
+infile=${program}.input
 if test -r ${infile}
 then
   mv ${infile} ${infile}.old

@@ -1,4 +1,11 @@
 #!/bin/sh
+program=oneSlovecPairVectorSolve
+exe=./bin/${program}
+if test ! -r ${exe}
+then
+  echo "No program ${exe} found ... "
+  exit 1
+fi
 scriptname=./run_Finland_two_slovecs.sh
 if [ $# != 4 ]
 then
@@ -35,7 +42,7 @@ do
 done
 nsp=`wc ${slovecsfile} | awk '{print $1}'`
 nev=`wc ${locationsfile} | awk '{print $1}'`
-infile=oneSlovecPairVectorSolve.input
+infile=${program}.input
 if test -r ${infile}
 then
   mv ${infile} ${infile}.old
@@ -43,5 +50,5 @@ fi
 cp ${slovecsfile} ${infile}
 cat ${locationsfile} >> ${infile}
 cat ${reltimesfile}  >> ${infile}
-oneSlovecPairVectorSolve ${nsp} ${nev} ${stat1} ${phas1} \
-                                       ${stat2} ${phas2}   < ${infile}
+${exe} ${nsp} ${nev} ${stat1} ${phas1} \
+        ${stat2} ${phas2}   < ${infile}

@@ -49,6 +49,8 @@ C
       REAL*8         DE2ARR( NRELVM )
       INTEGER        ISPARR( NRELVM )
       REAL*8         DCCARR( NRELVM )
+      INTEGER        NUMOU( NRELVM )
+      REAL*8         DCRES( NRELVM )
 C
       INTEGER        NUMEVO( NEVMAX )
       INTEGER        NUMSPO( NSPMAX )
@@ -97,6 +99,7 @@ C
 C
       INTEGER        I
       INTEGER        IEV
+      INTEGER        ITER
 C
 C CTARER is the name of the reference event
 C LTARER is the length of the character string CTARER
@@ -191,6 +194,13 @@ C
       ENDIF
       print *,' NRELVL observations read. NRELVL = ', NRELVL
 C
+C Initialize the arrays NUMOU and DCRES
+C
+      DO I = 1, NRELVL
+        NUMOU( I ) = 0
+        DCRES( I ) = 0.0d0
+      ENDDO
+C
 C Now we have read in all of our observations, we need to
 C calculate which of our events and slowness vectors are "live"
 C i.e. we may have read in some of the NEV and NSP that do not
@@ -221,24 +231,33 @@ C
       ENDIF
       print *,' IFIXLE = ', IFIXLE
 C
+      ITER   = 1
       CALL EABSLF( IERR, NLEV, IFIXLE, NEV, INDLEV, NSP, NPAIRM,
-     1             NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
+     1       ITER, NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
      2             DCCARR, DSXARR, DSYARR, LDA, ND, DAMAT, DDVEC,
      3             DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
      4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5             DABSVX, DABSVY, DWGHTA, DRELRX, DRELRY,
-     6             LDATCM, DATCVM, DWORK2, DOLDR2 )
+     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES )
 c     CALL OSEVPS( IERR, NLEV, ILEVA, ILEVB, NEV, INDLEV, NSP,
-c    1             NRELVL, IE1ARR, IE2ARR, ISPARR,
+c    1       ITER, NRELVL, IE1ARR, IE2ARR, ISPARR,
 c    2             DE1ARR, DE2ARR, DCCARR, DSXARR, DSYARR,
 c    3             LDA, ND, DAMAT, DDVEC, DWEIG, IOBS, JOBS,
 c    4             LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1,
-c    5             DXBMXA, DYBMYA, OSOLVE, DRESVN )
+c    5             DXBMXA, DYBMYA, OSOLVE, DRESVN, NUMOU, DCRES )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'EABSLF returned IERR = ', IERR
         CMESS  = 'Error from EABSLF '
         GOTO 99
       ENDIF
+      DO I = 1, NRELVL
+        IF ( NUMOU(I).GT.0 ) THEN
+          WRITE (6,82) I, NUMOU(I), DCRES(I), 
+     1                 DCRES(I)/DBLE( NUMOU(I) )
+        ENDIF
+      ENDDO
+ 82   FORMAT('Observation ',I6,' uses ',I8,' cres ',f20.4,
+     1        ' avg ',f20.4)
       DO I = 1, NLEV
         IEV = INDLEV( I )
         WRITE (6,81) CEVARR( IEV )(1:LEVARR( IEV ) ),
