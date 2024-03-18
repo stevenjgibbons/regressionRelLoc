@@ -9,12 +9,12 @@ C be at least NLEV*(NLEV-1)
 C
 C
       SUBROUTINE EABSLF( IERR, NLEV, IFIXLE, NEV, INDLEV, NSP, NPAIRM,
-     1                   NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
+     1             ITER, NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
      2                   DCCARR, DSXARR, DSYARR, LDA, ND, DAMAT, DDVEC,
      3                   DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
      4                   DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5                   DABSVX, DABSVY, DWGHTA, DRELRX, DRELRY, 
-     6                   LDATCM, DATCVM, DWORK2, DOLDR2 )
+     6                   LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES )
       IMPLICIT NONE
 C
       INTEGER            IERR
@@ -25,6 +25,7 @@ C
       INTEGER            NSP
       INTEGER            NPAIRM
       INTEGER            NRELVL
+      INTEGER            ITER
       INTEGER            IE1ARR( NRELVL )
       INTEGER            IE2ARR( NRELVL )
       INTEGER            ISPARR( NRELVL )
@@ -59,6 +60,8 @@ C
       REAL*8             DOLDR2( NPAIRM )
       INTEGER            LDATCM
       REAL*8             DATCVM( LDATCM, LDATCM )
+      INTEGER            NUMOU( NRELVL )
+      REAL*8             DCRES( NRELVL )
 C
       INTEGER            IPAIR
       INTEGER            NPAIRS
@@ -91,11 +94,11 @@ C           .
 C           . We want to calculate DXB-DXA and DYB-DYA
 C           .
             CALL OSEVPS( IERR, NLEV, ILEVA, ILEVB, NEV, INDLEV, NSP,
-     1             NRELVL, IE1ARR, IE2ARR, ISPARR,
+     1             ITER, NRELVL, IE1ARR, IE2ARR, ISPARR,
      2             DE1ARR, DE2ARR, DCCARR, DSXARR, DSYARR,
      3             LDA, ND, DAMAT, DDVEC, DWEIG, IOBS, JOBS,
      4             LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1,
-     5             DXBMXA, DYBMYA, OSOLVE, DRESVN )
+     5             DXBMXA, DYBMYA, OSOLVE, DRESVN, NUMOU, DCRES )
             IF ( IERR.NE.0 ) THEN
               WRITE (6,*) 'Subroutine EABSLF.'
               WRITE (6,*) 'OSEVPS returned IERR = ', IERR

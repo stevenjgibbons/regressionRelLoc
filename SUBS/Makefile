@@ -14,6 +14,7 @@ ALLSOURCECODE=  \
 	nlspef.f \
 	nspslr.f \
 	osevps.f \
+	osevrw.f \
 	osspps.f \
 	sach2e.f \
 	siwmps.f \
