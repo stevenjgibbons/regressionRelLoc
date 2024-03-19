@@ -48,6 +48,8 @@ C
       REAL*8         DE2ARR( NRELVM )
       INTEGER        ISPARR( NRELVM )
       REAL*8         DCCARR( NRELVM )
+      INTEGER        NUMOU( NRELVM )
+      REAL*8         DCRES( NRELVM )
 C
       INTEGER        NUMEVO( NEVMAX )
       INTEGER        NUMSPO( NSPMAX )
@@ -78,6 +80,7 @@ C
       INTEGER        JOBS( LDA )
 C
       INTEGER        I
+      INTEGER        ITER
       INTEGER        ILSPI
       INTEGER        ILSPJ
       LOGICAL        OSOLVE
@@ -227,6 +230,13 @@ C
       ENDIF
       print *,' NRELVL observations read. NRELVL = ', NRELVL
 C
+C Initialize the arrays NUMOU and DCRES
+C
+      DO I = 1, NRELVL
+        NUMOU( I ) = 0
+        DCRES( I ) = 0.0d0
+      ENDDO
+C
 C Now we have read in all of our observations, we need to
 C calculate which of our events and slowness vectors are "live"
 C i.e. we may have read in some of the NEV and NSP that do not
@@ -272,11 +282,11 @@ C Now solve for the vector distance difference between
 C statphase 1 and statphase 2 (i.e. sp2 - sp1)
 C
       CALL OSSPPS( IERR, NLSP, ILSPI, ILSPJ, NSP, INDLSP, NEV,
-     1             NRELVL, IE1ARR, IE2ARR, ISPARR,
+     1       ITER, NRELVL, IE1ARR, IE2ARR, ISPARR,
      2             DE1ARR, DE2ARR, DCCARR, DRXARR, DRYARR,
      3             LDA, ND, DAMAT, DDVEC, DWEIG, IOBS, JOBS,
      4             LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1,
-     5             DXJMXI, DYJMYI, OSOLVE, DRESVN )
+     5             DXJMXI, DYJMYI, OSOLVE, DRESVN, NUMOU, DCRES )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'OSSPPS returned IERR = ', IERR
         CMESS  = 'Error from OSSPPS '
