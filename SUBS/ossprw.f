@@ -1,20 +1,20 @@
 C
-C OSEVRW - One single event pair Residual write
+C OSSPRW - One single station/phase pair Residual write
 C 
-      SUBROUTINE OSEVRW( IERR, ITER, LUOUT, NLEV, ILEVA, ILEVB, NEV,
-     1                   INDLEV, NSP, NRELVL, IE1ARR, IE2ARR, ISPARR,
-     2                   DE1ARR, DE2ARR, DCCARR, DSXARR, DSYARR, DRESV )
+      SUBROUTINE OSSPRW( IERR, ITER, LUOUT, NLSP, ILSPI, ILSPJ, NSP,
+     1                   INDLSP, NEV, NRELVL, IE1ARR, IE2ARR, ISPARR,
+     2                   DE1ARR, DE2ARR, DCCARR, DRXARR, DRYARR, DRESV )
       IMPLICIT NONE
 C
       INTEGER     IERR
       INTEGER     ITER
       INTEGER     LUOUT
-      INTEGER     NLEV
-      INTEGER     ILEVA
-      INTEGER     ILEVB
-      INTEGER     NEV
-      INTEGER     INDLEV( NLEV )
+      INTEGER     NLSP
+      INTEGER     ILSPI
+      INTEGER     ILSPJ
       INTEGER     NSP
+      INTEGER     INDLSP( NLSP )
+      INTEGER     NEV
       INTEGER     NRELVL
       INTEGER     IE1ARR( NRELVL )
       INTEGER     IE2ARR( NRELVL )
@@ -22,8 +22,8 @@ C
       REAL*8      DE1ARR( NRELVL )
       REAL*8      DE2ARR( NRELVL )
       REAL*8      DCCARR( NRELVL )
-      REAL*8      DSXARR( NSP )
-      REAL*8      DSYARR( NSP )
+      REAL*8      DRXARR( NEV )
+      REAL*8      DRYARR( NEV )
       REAL*8      DRESV( * )
 C
 C Note that the dimension of DRESV has to be at least ND
@@ -35,10 +35,10 @@ C
       INTEGER     JRELVL
       REAL*8      DCCI
       REAL*8      DCCJ
-      REAL*8      DSXI
-      REAL*8      DSXJ
-      REAL*8      DSYI
-      REAL*8      DSYJ
+      REAL*8      DRXA
+      REAL*8      DRXB
+      REAL*8      DRYA
+      REAL*8      DRYB
       REAL*8      DTIA
       REAL*8      DTIB
       REAL*8      DTJA
@@ -55,50 +55,49 @@ C
       INTEGER     ND
 C
       IERR   = 0
-      IF ( ILEVA.EQ.ILEVB .OR. ILEVA.LT.1 .OR. ILEVA.GT.NLEV .OR.
-     1     ILEVB.LT.1     .OR. ILEVB.GT.NLEV ) THEN
-        WRITE (6,*) 'Error in routine OSEVPS )'
-        WRITE (6,*) 'ILEVA  = ', ILEVA
-        WRITE (6,*) 'ILEVB  = ', ILEVB
-        WRITE (6,*) 'NLEV   = ', NLEV
+      IF ( ILSPI.EQ.ILSPJ .OR. ILSPI.LT.1 .OR. ILSPI.GT.NLSP .OR.
+     1     ILSPJ.LT.1     .OR. ILSPJ.GT.NLSP ) THEN
+        WRITE (6,*) 'Error in routine OSSPRW )'
+        WRITE (6,*) 'ILSPI  = ', ILSPI
+        WRITE (6,*) 'ILSPJ  = ', ILSPJ
+        WRITE (6,*) 'NLSP   = ', NLSP
         IERR   = 1
         RETURN
       ENDIF
-      IEVA   = INDLEV( ILEVA )
-      IEVB   = INDLEV( ILEVB )
-      IF(     IEVA.LT.1 .OR. IEVA.GT.NEV  .OR.
-     1        IEVB.LT.1 .OR. IEVB.GT.NEV ) THEN
-        WRITE (6,*) 'Error in routine OSEVPS )'
-        WRITE (6,*) 'IEVA  = ', IEVA
-        WRITE (6,*) 'IEVB  = ', IEVB
-        WRITE (6,*) 'NEV   = ', NEV
+      ISPI   = INDLSP( ILSPI )
+      ISPJ   = INDLSP( ILSPJ )
+      IF(     ISPI.LT.1 .OR. ISPI.GT.NSP  .OR.
+     1        ISPJ.LT.1 .OR. ISPJ.GT.NSP ) THEN
+        WRITE (6,*) 'Error in routine OSSPRW )'
+        WRITE (6,*) 'ISPI  = ', ISPI
+        WRITE (6,*) 'ISPJ  = ', ISPJ
+        WRITE (6,*) 'NSP   = ', NSP
         IERR   = 1
         RETURN
       ENDIF
 C
       ND     = 0
       DO IRELVL = 1, NRELVL
-        IF (     IE1ARR( IRELVL ).EQ.IEVA       .AND.
-     1           IE2ARR( IRELVL ).EQ.IEVB       ) THEN
+        IF (     ISPARR( IRELVL ).EQ.ISPI       ) THEN
           DTIA   = DE1ARR( IRELVL )
           DTIB   = DE2ARR( IRELVL )
           DCCI   = DCCARR( IRELVL )
-          ISPI   = ISPARR( IRELVL )
-          DSXI   = DSXARR( ISPI )
-          DSYI   = DSYARR( ISPI )
+          IEVA   = IE1ARR( IRELVL )
+          IEVB   = IE2ARR( IRELVL )
+          DRXA   = DRXARR( IEVA )
+          DRYA   = DRYARR( IEVA )
+          DRXB   = DRXARR( IEVB )
+          DRYB   = DRYARR( IEVB )
           DO JRELVL = 1, NRELVL
             IF (     IE1ARR( JRELVL ).EQ.IEVA       .AND.
      1               IE2ARR( JRELVL ).EQ.IEVB       .AND.
-     2               ISPARR( JRELVL ).NE.ISPI    ) THEN
+     2               ISPARR( JRELVL ).EQ.ISPJ    ) THEN
               DTJA   = DE1ARR( JRELVL )
               DTJB   = DE2ARR( JRELVL )
               DCCJ   = DCCARR( JRELVL )
-              ISPJ   = ISPARR( JRELVL )
-              DSXJ   = DSXARR( ISPJ )
-              DSYJ   = DSYARR( ISPJ )
               ND             = ND + 1
-              DIFFX  = DSXJ - DSXI
-              DIFFY  = DSYJ - DSYI
+              DIFFX  = DRXB - DRXA
+              DIFFY  = DRYB - DRYA
               DRHS   = DTIB - DTJB - DTIA + DTJA
               DWGHT  = 0.5d0*( DABS(DCCI)+DABS(DCCJ) ) + 0.01d0
               WRITE ( LUOUT, 81 ) ND, ITER, IEVA, IEVB, ISPI, ISPJ,

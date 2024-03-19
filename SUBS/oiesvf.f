@@ -1,0 +1,144 @@
+C
+C One Iteration Event and Slowness Vector Find.
+C 2024-03-18
+C
+C Performs one iteration where we start off with a set of slowness
+C vectors and find the loci of events that best fits them (using
+C EABSLF) and we then find the new set of slowness vectors that
+C best fit our new set of events (using ABSSVF).
+C This routine is really just a wrapper for those two routines,
+C carrying out a little book-keeping.
+C
+C IFIXLE is the index of the live event that we want to fix to zero.
+C NPAIRM is the maximum number of pairs for our relative to absolute
+C calculation. Now if we have NLEV live events and NLSP live slowness
+C vectors then NPAIRM needs to be at least the greater of the
+C two quantities NLEV*(NLEV-1) and NLSP*(NLSP-1)
+C
+C
+      SUBROUTINE OIESVF( IERR, NLEV, NLSP, IFIXLE, NEV, INDLEV, NSP,
+     1             INDLSP, NPAIRM, ITER, NRELVL, IE1ARR, IE2ARR, ISPARR,
+     2             DE1ARR, DE2ARR, DCCARR, DSXARR, DSYARR, DRXARR,
+     3             DRYARR, LDA, ND, DAMAT, DDVEC, DWEIG, IOBS, JOBS,
+     4             LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1, IABSVL,
+     5             JABSVL, DRELVX, DRELVY, DABSEX, DABSEY, DABSSX,
+     6             DABSSY, DWGHTA, DRELRX, DRELRY, LDATCM, DATCVM,
+     7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY )
+      IMPLICIT NONE
+C
+      INTEGER            IERR
+      INTEGER            NLEV
+      INTEGER            NLSP
+      INTEGER            IFIXLE
+      INTEGER            NEV
+      INTEGER            INDLEV( NLEV )
+      INTEGER            NSP
+      INTEGER            INDLSP( NLSP )
+      INTEGER            NPAIRM
+      INTEGER            ITER
+      INTEGER            NRELVL
+      INTEGER            IE1ARR( NRELVL )
+      INTEGER            IE2ARR( NRELVL )
+      INTEGER            ISPARR( NRELVL )
+      REAL*8             DE1ARR( NRELVL )
+      REAL*8             DE2ARR( NRELVL )
+      REAL*8             DCCARR( NRELVL )
+      REAL*8             DSXARR( NSP )
+      REAL*8             DSYARR( NSP )
+      REAL*8             DRXARR( NEV )
+      REAL*8             DRYARR( NEV )
+      INTEGER            LDA
+      INTEGER            ND
+      REAL*8             DAMAT( LDA, 3 )
+      REAL*8             DDVEC( LDA )
+      REAL*8             DWEIG( LDA )
+      INTEGER            IOBS( LDA )
+      INTEGER            JOBS( LDA )
+      INTEGER            LWORK
+      INTEGER            LWOPT
+      REAL*8             DWORK1( LWORK )
+      REAL*8             DRESV( LDA )
+      REAL*8             DOLDRV( LDA )
+      REAL*8             DTEMP1( LDA )
+      INTEGER            IABSVL( NPAIRM )
+      INTEGER            JABSVL( NPAIRM )
+      REAL*8             DRELVX( NPAIRM )
+      REAL*8             DRELVY( NPAIRM )
+      REAL*8             DABSEX( NLEV )
+      REAL*8             DABSEY( NLEV )
+      REAL*8             DABSSX( NLSP )
+      REAL*8             DABSSY( NLSP )
+      REAL*8             DWGHTA( NPAIRM )
+      REAL*8             DRELRX( NPAIRM )
+      REAL*8             DRELRY( NPAIRM )
+      REAL*8             DWORK2( NPAIRM )
+      REAL*8             DOLDR2( NPAIRM )
+      INTEGER            LDATCM
+      REAL*8             DATCVM( LDATCM, LDATCM )
+      INTEGER            NUMOU( NRELVL )
+      REAL*8             DCRES( NRELVL )
+      REAL*8             DREQMX
+      REAL*8             DREQMY
+C
+      INTEGER            IEV
+      INTEGER            ILEV
+      INTEGER            ISP
+      INTEGER            ILSP
+C
+      IERR   = 0
+C
+C First we need to call EABSLF:
+C
+      CALL EABSLF( IERR, NLEV, IFIXLE, NEV, INDLEV, NSP, NPAIRM,
+     1             ITER, NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
+     2             DCCARR, DSXARR, DSYARR, LDA, ND, DAMAT, DDVEC,
+     3             DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
+     4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
+     5             DABSEX, DABSEY, DWGHTA, DRELRX, DRELRY,
+     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES )
+      IF ( IERR.NE.0 ) THEN
+        WRITE (6,*) 'Subroutine OIESVF. Error from EABSLF.'
+        IERR   = 1
+        RETURN
+      ENDIF
+C
+C We have the new absolute values of the event coordinates
+C in DABSEX and DABSEY. We need to transfer them to DRXARR and
+C DRYARR so that we can use them to calculate the next iteration
+C of slowness vectors (using ABSSVF).
+C
+      DO ILEV = 1, NLEV
+        IEV           = INDLEV( ILEV )
+        DRXARR( IEV ) = DABSEX( ILEV )
+        DRYARR( IEV ) = DABSEY( ILEV )
+      ENDDO
+C
+C Now we call ABSSVF
+C
+      CALL ABSSVF( IERR, NLSP, NSP, INDLSP, NEV, NPAIRM,
+     1             ITER, NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
+     2             DCCARR, DRXARR, DRYARR, LDA, ND, DAMAT, DDVEC,
+     3             DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
+     4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
+     5             DABSSX, DABSSY, DWGHTA, DRELRX, DRELRY,
+     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
+     7             DREQMX, DREQMY )
+      IF ( IERR.NE.0 ) THEN
+        WRITE (6,*) 'Subroutine OIESVF. Error from ABSSVF.'
+        IERR   = 1
+        RETURN
+      ENDIF
+C
+C We now have the new absolute values of the slowness vectors
+C in DABSSX and DABSSY. Need to transfer them to the correct locations
+C in DSXARR and DSYARR ready for the next iteration.
+C
+      DO ILSP = 1, NLSP
+        ISP           = INDLSP( ILSP )
+        DSXARR( ISP ) = DABSSX( ILSP )
+        DSYARR( ISP ) = DABSSY( ILSP )
+      ENDDO
+C
+      RETURN
+      END
+C

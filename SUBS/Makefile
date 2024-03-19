@@ -1,5 +1,6 @@
 #
 ALLSOURCECODE=  \
+	abssvf.f \
 	csargm.f \
 	dtlnrd.f \
 	eabslf.f \
@@ -13,9 +14,11 @@ ALLSOURCECODE=  \
 	nevelr.f \
 	nlspef.f \
 	nspslr.f \
+	oiesvf.f \
 	osevps.f \
 	osevrw.f \
 	osspps.f \
+	ossprw.f \
 	sach2e.f \
 	siwmps.f \
 	vdcr2a.f

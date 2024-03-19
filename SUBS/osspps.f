@@ -55,12 +55,18 @@ C
 C We calculate the 2-norm of the residual vector (DRESVN) for convenience
 C (even though that could be calculated later)
 C
+C The integer ITER is only used for display purposes so set to zero if
+C not relevant.
+C We update the arrays NUMOU, DCRES - both with dimension NRELVL
+C The array NUMOU is the number of times an observation has been used
+C DCRES is the cumulative absolute residual for that observation.
+C
       SUBROUTINE OSSPPS( IERR, NLSP, ILSPI, ILSPJ, NSP, INDLSP, NEV,
-     1                   NRELVL, IE1ARR, IE2ARR, ISPARR,
+     1             ITER, NRELVL, IE1ARR, IE2ARR, ISPARR,
      2                   DE1ARR, DE2ARR, DCCARR, DRXARR, DRYARR,
      3                   LDA, ND, DAMAT, DDVEC, DWEIG, IOBS, JOBS,
      4                   LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1,
-     5                   DXBMXA, DYBMYA, OSOLVE, DRESVN )
+     5                   DXJMXI, DYJMYI, OSOLVE, DRESVN, NUMOU, DCRES )
       IMPLICIT NONE
 C
       INTEGER     IERR
@@ -70,6 +76,7 @@ C
       INTEGER     NSP
       INTEGER     INDLSP( NLSP )
       INTEGER     NEV
+      INTEGER     ITER
       INTEGER     NRELVL
       INTEGER     IE1ARR( NRELVL )
       INTEGER     IE2ARR( NRELVL )
@@ -92,10 +99,12 @@ C
       REAL*8      DRESV( LDA )
       REAL*8      DOLDRV( LDA )
       REAL*8      DTEMP1( LDA )
-      REAL*8      DXBMXA
-      REAL*8      DYBMYA
+      REAL*8      DXJMXI
+      REAL*8      DYJMYI
       LOGICAL     OSOLVE
       REAL*8      DRESVN
+      INTEGER     NUMOU( NRELVL )
+      REAL*8      DCRES( NRELVL )
 C
       INTEGER     MXITER
       PARAMETER ( MXITER = 10000 )
@@ -127,6 +136,8 @@ C
 C
       INTEGER     IEVA
       INTEGER     IEVB
+      INTEGER     ID
+      INTEGER     LUOUT
 C
       REAL*8      DNRM2
       INTEGER     INCX
@@ -224,10 +235,29 @@ C
         RETURN
       ENDIF
 C
-      DXBMXA = DMVEC( 1 )
-      DYBMYA = DMVEC( 2 )
+      DXJMXI = DMVEC( 1 )
+      DYJMYI = DMVEC( 2 )
       OSOLVE = .TRUE.
       DRESVN = DNRM2( ND, DRESV, INCX )
+C
+C Update the cumulative absolute residuals and the
+C numbers of times used.
+C
+      DO ID = 1, ND
+        IRELVL          = IOBS( ID )
+        JRELVL          = JOBS( ID )
+        NUMOU( IRELVL ) = NUMOU( IRELVL ) + 1
+        NUMOU( JRELVL ) = NUMOU( JRELVL ) + 1
+        DCRES( IRELVL ) = DCRES( IRELVL ) + DABS( DRESV(ID) )
+        DCRES( JRELVL ) = DCRES( JRELVL ) + DABS( DRESV(ID) )
+      ENDDO
+C
+C (Write out residuals to fort file. Comment out if necessary)
+C
+c     LUOUT  = 99
+c     CALL OSSPRW( IERR, ITER, LUOUT, NLSP, ILSPI, ILSPJ, NSP,
+c    1             INDLSP, NEV, NRELVL, IE1ARR, IE2ARR, ISPARR,
+c    2             DE1ARR, DE2ARR, DCCARR, DRXARR, DRYARR, DRESV )
 C
       RETURN
       END

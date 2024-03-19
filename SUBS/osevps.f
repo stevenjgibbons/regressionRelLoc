@@ -256,10 +256,10 @@ C
 C
 C (Write out residuals to fort file. Comment out if necessary)
 C
-      LUOUT  = 99
-      CALL OSEVRW( IERR, ITER, LUOUT, NLEV, ILEVA, ILEVB, NEV,
-     1             INDLEV, NSP, NRELVL, IE1ARR, IE2ARR, ISPARR,
-     2             DE1ARR, DE2ARR, DCCARR, DSXARR, DSYARR, DRESV )
+c     LUOUT  = 99
+c     CALL OSEVRW( IERR, ITER, LUOUT, NLEV, ILEVA, ILEVB, NEV,
+c    1             INDLEV, NSP, NRELVL, IE1ARR, IE2ARR, ISPARR,
+c    2             DE1ARR, DE2ARR, DCCARR, DSXARR, DSYARR, DRESV )
 C
       RETURN
       END
