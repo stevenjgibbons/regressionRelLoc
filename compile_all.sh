@@ -9,10 +9,14 @@ fi
 make oneEventPairVectorSolve
 make oneSlovecPairVectorSolve
 make fixedSlovecsEventSolve
+make fixedEventsSlovecsSolve
+make regressionRelLoc
 for file in \
    bin/oneEventPairVectorSolve \
    bin/oneSlovecPairVectorSolve \
-   bin/fixedSlovecsEventSolve
+   bin/fixedSlovecsEventSolve \
+   bin/fixedEventsSlovecsSolve \
+   bin/regressionRelLoc
 do
   if test ! -r $file
   then
@@ -25,3 +29,5 @@ chmod 755 run_DPRK_two_events.sh
 chmod 755 run_Finland_two_events.sh
 chmod 755 run_DPRK_abs_events.sh
 chmod 755 run_Finland_abs_events.sh
+chmod 755 run_DPRK_regressionRelLoc.sh
+chmod 755 run_Finland_regressionRelLoc.sh
