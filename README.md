@@ -21,7 +21,7 @@ It will return (rx_eventB - rx_eventA, ry_eventB - ry_eventA) given in km.
 (See the scripts *run_Finland_two_events.sh* and *run_DPRK_two_events.sh*)  
 
 ```
-oneEventPairVectorSolve
+oneSlovecPairVectorSolve
 ```
 Here we assume a fixed set of event coordinates (specified as x and y in km) and specify two slowness vectors, i.e. station_i, phase_i, station_j, phase_j.  
 It will return (sx_j - sx_i, sy_j - sy_i ) in seconds per km.  
@@ -31,7 +31,22 @@ It will return (sx_j - sx_i, sy_j - sy_i ) in seconds per km.
 fixedSlovecsEventSolve
 ```
 Here we assume a fixed set of slowness vectors and specify a reference event. It then solves for the locations of the other events relative to this event.
-(See the scripts *run_Finland_and_events.sh* and *run_DPRK_and_events.sh*)
+(See the scripts *run_Finland_abs_events.sh* and *run_DPRK_abs_events.sh*)  
+
+```
+fixedEventsSlovecsSolve
+```
+Here we assume a fixed set of events and solve for the slowness vectors that best fit these.
+(See the scripts *run_Finland_abs_slovecs.sh* and *run_DPRK_abs_slovecs.sh*)  
+
+```
+regressionRelLoc
+```
+Here we iterate to solve both slowness vectors and event locations.
+(See the script *run_Finland_regressionRelLoc.sh*)
+
+
+
 
 **Compiling instructions**  
 
