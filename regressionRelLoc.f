@@ -345,7 +345,7 @@ C
      1        ' avg ',f20.4)
 C
       DO ISP = 1, NSP
-        WRITE (7,71) ITER,
+        WRITE (6,71) ITER,
      1               CSTARR( ISP )(1:LSTARR( ISP ) ),
      2               CPHARR( ISP )(1:LPHARR( ISP ) ),
      3               DSTLAT( ISP ), DSTLON( ISP ),
