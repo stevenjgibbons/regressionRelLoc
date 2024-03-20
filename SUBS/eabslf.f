@@ -107,9 +107,9 @@ C           .
             ENDIF
             IF ( OSOLVE ) THEN
               IPAIR            = IPAIR + 1
-              WRITE (6,81) ILEVA, ILEVB, DXBMXA, DYBMYA
- 81   FORMAT('A= ',I4,' B= ',I4,' dxb-dxa = ',f10.4,' dyb-dya = ',
-     1       f10.4)
+c             WRITE (6,81) ILEVA, ILEVB, DXBMXA, DYBMYA
+c81   FORMAT('A= ',I4,' B= ',I4,' dxb-dxa = ',f10.4,' dyb-dya = ',
+c    1       f10.4)
               IABSVL( IPAIR  ) = ILEVA
               JABSVL( IPAIR  ) = ILEVB
               DRELVX( IPAIR  ) = DXBMXA

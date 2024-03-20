@@ -111,9 +111,9 @@ C           .
             ENDIF
             IF ( OSOLVE ) THEN
               IPAIR            = IPAIR + 1
-              WRITE (6,81) ILSPI, ILSPJ, DXJMXI, DYJMYI
- 81   FORMAT('I= ',I4,' J= ',I4,' dxj-dxi = ',f10.4,' dyj-dyi = ',
-     1       f10.4)
+c             WRITE (6,81) ILSPI, ILSPJ, DXJMXI, DYJMYI
+c81   FORMAT('I= ',I4,' J= ',I4,' dxj-dxi = ',f10.4,' dyj-dyi = ',
+c    1       f10.4)
               IABSVL( IPAIR  ) = ILSPI
               JABSVL( IPAIR  ) = ILSPJ
               DRELVX( IPAIR  ) = DXJMXI

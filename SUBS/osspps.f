@@ -210,9 +210,9 @@ C     . At this point we need to return if we have
 C     . fewer than 4 observations - since we have 3 unknowns.
 C     .
       IF ( ND.LT.4 ) THEN
-        WRITE (6,*) 'ND     = ', ND,' for '
-        WRITE (6,*) 'ILSPI  = ', ILSPI
-        WRITE (6,*) 'ILSPJ  = ', ILSPJ
+c       WRITE (6,*) 'ND     = ', ND,' for '
+c       WRITE (6,*) 'ILSPI  = ', ILSPI
+c       WRITE (6,*) 'ILSPJ  = ', ILSPJ
         RETURN
       ENDIF
 C     .
