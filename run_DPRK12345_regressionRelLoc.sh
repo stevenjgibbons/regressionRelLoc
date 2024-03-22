@@ -47,4 +47,4 @@ fi
 cp ${slovecsfile} ${infile}
 grep -v DPRK6 ${locationsfile} >> ${infile}
 grep -v DPRK6 ${reltimesfile}  >> ${infile}
-${exe} ${nsp} ${nev} ${refevent} ${dtol} ${mxiter} < ${infile} | grep -v resid_diff | grep -v dxj-dxi | grep -v dxb-dxa
+${exe} ${nsp} ${nev} ${refevent} ${dtol} ${mxiter} < ${infile} | grep -v resid_diff | grep -v dxj-dxi | grep -v dxb-dxa | grep -v Observation
