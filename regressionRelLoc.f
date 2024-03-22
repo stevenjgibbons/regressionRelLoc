@@ -110,6 +110,10 @@ c     PARAMETER    ( LDATCM = NEVMAX )
       REAL*8         DRELRY( NPAIRM )
       REAL*8         DWORK2( NPAIRM )
       REAL*8         DOLDR2( NPAIRM )
+      REAL*8         DCVMEX( NEVMAX )
+      REAL*8         DCVMEY( NEVMAX )
+      REAL*8         DCVMSX( NSPMAX )
+      REAL*8         DCVMSY( NSPMAX )
 C
       INTEGER        I
       INTEGER        IEV
@@ -128,6 +132,7 @@ C
       REAL*8         DREQMY
       REAL*8         DSCALE
 C
+      REAL*8         DCOVEL
       REAL*8         DTOTNM
       REAL*8         DNRM2
       INTEGER        INCX
@@ -310,7 +315,8 @@ C     .
      4             LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1, IABSVL,
      5             JABSVL, DRELVX, DRELVY, DABSEX, DABSEY, DABSSX,
      6             DABSSY, DWGHTA, DRELRX, DRELRY, LDATCM, DATCVM,
-     7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY )
+     7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY,
+     8             DCVMEX, DCVMEY, DCVMSX, DCVMSY )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'OIESVF returned IERR = ', IERR
         CMESS  = 'Error from OIESVF '
@@ -345,21 +351,27 @@ C
      1        ' avg ',f20.4)
 C
       DO ISP = 1, NSP
+        DCOVEL = DSQRT( DCVMSX( ISP )*DCVMSX( ISP ) +
+     1                  DCVMSY( ISP )*DCVMSY( ISP )  )
         WRITE (6,71) ITER,
      1               CSTARR( ISP )(1:LSTARR( ISP ) ),
      2               CPHARR( ISP )(1:LPHARR( ISP ) ),
      3               DSTLAT( ISP ), DSTLON( ISP ),
      4               DRFLAT( ISP ), DRFLON( ISP ),
-     5               DSXARR( ISP ), DSYARR( ISP )
+     5               DSXARR( ISP ), DSYARR( ISP ),
+     6               DCOVEL
       ENDDO
  71   FORMAT(I5,1X,A8,1X,A8,1X,f10.5,1X,f11.5,1X,f10.5,1X,f11.5,1X,
-     1               f13.8,1X,f13.8 )
+     1               f13.8,1X,f13.8,1X,f13.8)
 C
       DO IEV = 1, NLEV
+        DCOVEL = DSQRT( DCVMEX( ISP )*DCVMEX( ISP ) +
+     1                  DCVMEY( ISP )*DCVMEY( ISP )  )
         WRITE (6,81) ITER, CEVARR( IEV )(1:LEVARR( IEV ) ),
-     1               DRXARR( IEV ), DRYARR( IEV )
+     1               DRXARR( IEV ), DRYARR( IEV ),
+     2               DCOVEL
       ENDDO
- 81   FORMAT('Iter ',I5,1X,A,1X,f10.4,1X,f10.4 )
+ 81   FORMAT('Iter ',I5,1X,A,1X,f10.4,1X,f10.4,1X,f10.4)
 C
       IF ( ITER.GE.MXITER ) THEN
         WRITE (6,*) 'MXITER iterations exceeded.'

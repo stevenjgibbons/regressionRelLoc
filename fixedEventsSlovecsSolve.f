@@ -95,6 +95,8 @@ C
       REAL*8         DRELRY( NPAIRM )
       REAL*8         DWORK2( NPAIRM )
       REAL*8         DOLDR2( NPAIRM )
+      REAL*8         DCVSVX( NEVMAX )
+      REAL*8         DCVSVY( NEVMAX )
 C
       INTEGER        I
       INTEGER        ISP
@@ -103,6 +105,7 @@ C
       INTEGER        IERR
       INTEGER        LUIN
 C
+      REAL*8         DCOVEL
       REAL*8         DREQMX
       REAL*8         DREQMY
       REAL*8         DSCALE
@@ -224,7 +227,7 @@ C
      4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5             DABSVX, DABSVY, DWGHTA, DRELRX, DRELRY,
      6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
-     7             DREQMX, DREQMY )
+     7             DREQMX, DREQMY, DCVSVX, DCVSVY )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'ABSSVF returned IERR = ', IERR
         CMESS  = 'Error from ABSSVF '
@@ -243,14 +246,17 @@ c    2             DSTLAT, DSTLON, DRFLAT, DRFLON,
 
       DO I = 1, NLSP
         ISP = INDLSP( I )
+        DCOVEL = DSQRT( DCVSVX( I )*DCVSVX( I ) +
+     1                  DCVSVY( I )*DCVSVY( I )  )
         WRITE (6,81) CSTARR( ISP )(1:LSTARR( ISP ) ),
      1               CPHARR( ISP )(1:LPHARR( ISP ) ),
      2               DSTLAT( ISP ), DSTLON( ISP ),
      3               DRFLAT( ISP ), DRFLON( ISP ),
-     4               DABSVX( I ), DABSVY( I )
+     4               DABSVX( I ), DABSVY( I ),
+     5               DCOVEL
       ENDDO
  81   FORMAT(A8,1X,A8,1X,f10.5,1X,f11.5,1X,f10.5,1X,f11.5,1X,
-     1               f13.8,1X,f13.8 )
+     1               f13.8,1X,f13.8,1X,f13.8 )
 c     WRITE (6,81) CTAREB(1:LTAREB), CTARER(1:LTARER),
 c    1             DXBMXA, DYBMYA, ND, DRESVN
 c81   FORMAT(A,' minus ',A,1X,f10.4,1X,f10.4,1X,I4,1X,f20.4)

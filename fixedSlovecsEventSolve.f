@@ -96,6 +96,10 @@ C
       REAL*8         DRELRY( NPAIRM )
       REAL*8         DWORK2( NPAIRM )
       REAL*8         DOLDR2( NPAIRM )
+      REAL*8         DCVMEX( NEVMAX )
+      REAL*8         DCVMEY( NEVMAX )
+C
+      REAL*8         DCOVEL
 C
       INTEGER        I
       INTEGER        IEV
@@ -238,7 +242,8 @@ C
      3             DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
      4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5             DABSVX, DABSVY, DWGHTA, DRELRX, DRELRY,
-     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES )
+     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
+     7             DCVMEX, DCVMEY )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'EABSLF returned IERR = ', IERR
         CMESS  = 'Error from EABSLF '
@@ -254,10 +259,13 @@ C
      1        ' avg ',f20.4)
       DO I = 1, NLEV
         IEV = INDLEV( I )
+        DCOVEL = DSQRT( DCVMEX( I )*DCVMEX( I ) +
+     1                  DCVMEY( I )*DCVMEY( I )  )
         WRITE (6,81) CEVARR( IEV )(1:LEVARR( IEV ) ),
-     1               DABSVX( I ), DABSVY( I )
+     1               DABSVX( I ), DABSVY( I ),
+     2               DCOVEL
       ENDDO
- 81   FORMAT(A,' ',f10.4,1X,f10.4 )
+ 81   FORMAT(A,' ',f10.4,1X,f10.4,1X,f10.4 )
 c     WRITE (6,81) CTAREB(1:LTAREB), CTARER(1:LTARER),
 c    1             DXBMXA, DYBMYA, ND, DRESVN
 c81   FORMAT(A,' minus ',A,1X,f10.4,1X,f10.4,1X,I4,1X,f20.4)
