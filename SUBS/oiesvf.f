@@ -23,7 +23,8 @@ C
      4             LWORK, LWOPT, DWORK1, DRESV, DOLDRV, DTEMP1, IABSVL,
      5             JABSVL, DRELVX, DRELVY, DABSEX, DABSEY, DABSSX,
      6             DABSSY, DWGHTA, DRELRX, DRELRY, LDATCM, DATCVM,
-     7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY )
+     7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY,
+     8             DCVMEX, DCVMEY, DCVMSX, DCVMSY )
       IMPLICIT NONE
 C
       INTEGER            IERR
@@ -79,6 +80,10 @@ C
       REAL*8             DCRES( NRELVL )
       REAL*8             DREQMX
       REAL*8             DREQMY
+      REAL*8             DCVMEX( NLEV )
+      REAL*8             DCVMEY( NLEV )
+      REAL*8             DCVMSX( NLSP )
+      REAL*8             DCVMSY( NLSP )
 C
       INTEGER            IEV
       INTEGER            ILEV
@@ -95,7 +100,8 @@ C
      3             DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
      4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5             DABSEX, DABSEY, DWGHTA, DRELRX, DRELRY,
-     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES )
+     6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
+     7             DCVMEX, DCVMEY )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'Subroutine OIESVF. Error from EABSLF.'
         IERR   = 1
@@ -107,10 +113,20 @@ C in DABSEX and DABSEY. We need to transfer them to DRXARR and
 C DRYARR so that we can use them to calculate the next iteration
 C of slowness vectors (using ABSSVF).
 C
+C Store DCVMEX and DCVMEY temporarily in DATCVM(1,) and DATCVM(2,)
+C and then put the values back into DCVMEX and DCVMEY in the correct order
+C
+      DO ILEV = 1, NLEV
+        DATCVM( 1, ILEV ) = DCVMEX( ILEV )
+        DATCVM( 2, ILEV ) = DCVMEY( ILEV )
+      ENDDO
+C
       DO ILEV = 1, NLEV
         IEV           = INDLEV( ILEV )
         DRXARR( IEV ) = DABSEX( ILEV )
         DRYARR( IEV ) = DABSEY( ILEV )
+        DCVMEX( IEV ) = DATCVM( 1, ILEV )
+        DCVMEY( IEV ) = DATCVM( 2, ILEV )
       ENDDO
 C
 C Now we call ABSSVF
@@ -122,7 +138,7 @@ C
      4             DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5             DABSSX, DABSSY, DWGHTA, DRELRX, DRELRY,
      6             LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
-     7             DREQMX, DREQMY )
+     7             DREQMX, DREQMY, DCVMSX, DCVMSY )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'Subroutine OIESVF. Error from ABSSVF.'
         IERR   = 1
@@ -134,9 +150,16 @@ C in DABSSX and DABSSY. Need to transfer them to the correct locations
 C in DSXARR and DSYARR ready for the next iteration.
 C
       DO ILSP = 1, NLSP
+        DATCVM( 1, ILSP ) = DCVMSX( ILSP )
+        DATCVM( 2, ILSP ) = DCVMSY( ILSP )
+      ENDDO
+C
+      DO ILSP = 1, NLSP
         ISP           = INDLSP( ILSP )
         DSXARR( ISP ) = DABSSX( ILSP )
         DSYARR( ISP ) = DABSSY( ILSP )
+        DCVMSX( ISP ) = DATCVM( 1, ILSP )
+        DCVMSY( ISP ) = DATCVM( 2, ILSP )
       ENDDO
 C
       RETURN

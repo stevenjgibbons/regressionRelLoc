@@ -14,7 +14,8 @@ C
      3                   DWEIG, IOBS, JOBS, LWORK, LWOPT, DWORK1, DRESV,
      4                   DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5                   DABSVX, DABSVY, DWGHTA, DRELRX, DRELRY, 
-     6                   LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES )
+     6                   LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
+     7                   DCVSVX, DCVSVY )
       IMPLICIT NONE
 C
       INTEGER            IERR
@@ -62,7 +63,10 @@ C
       REAL*8             DATCVM( LDATCM, LDATCM )
       INTEGER            NUMOU( NRELVL )
       REAL*8             DCRES( NRELVL )
+      REAL*8             DCVSVX( NLEV )
+      REAL*8             DCVSVY( NLEV )
 C
+      INTEGER            I
       INTEGER            IPAIR
       INTEGER            NPAIRS
       INTEGER            ILEVA
@@ -136,6 +140,12 @@ C
         RETURN
       ENDIF
 C
+C Now put the sqrt( diagonals ) of the covariance matrix into DCVSVX
+C
+      DO I = 1, NABSVL
+        DCVSVX( I ) = DSQRT( DATCVM( I, I ) )
+      ENDDO
+C
 c     NABSVL = NLEV
       CALL IRLSRA( IERR, NABSVL, NPAIRS, LDATCM, IFIXLE,
      1             IABSVL, JABSVL, DRELVY, DWGHTA, DRELRY,
@@ -147,6 +157,12 @@ c     NABSVL = NLEV
         IERR   = 1
         RETURN
       ENDIF
+C
+C Now put the sqrt( diagonals ) of the covariance matrix into DCVSVY
+C
+      DO I = 1, NABSVL
+        DCVSVY( I ) = DSQRT( DATCVM( I, I ) )
+      ENDDO
 C
       RETURN
       END

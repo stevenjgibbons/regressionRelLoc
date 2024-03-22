@@ -17,7 +17,7 @@ C
      4                   DOLDRV, DTEMP1, IABSVL, JABSVL, DRELVX, DRELVY,
      5                   DABSVX, DABSVY, DWGHTA, DRELRX, DRELRY,
      6                   LDATCM, DATCVM, DWORK2, DOLDR2, NUMOU, DCRES,
-     7                   DREQMX, DREQMY )
+     7                   DREQMX, DREQMY, DCVSVX, DCVSVY )
       IMPLICIT NONE
 C
       INTEGER            IERR
@@ -66,6 +66,8 @@ C
       REAL*8             DCRES( NRELVL )
       REAL*8             DREQMX
       REAL*8             DREQMY
+      REAL*8             DCVSVX( NLSP )
+      REAL*8             DCVSVY( NLSP )
 C
       INTEGER            IPAIR
       INTEGER            NPAIRS
@@ -140,6 +142,12 @@ C
         RETURN
       ENDIF
 C
+C Now put the sqrt( diagonals ) of the covariance matrix into DCVSVX
+C
+      DO I = 1, NABSVL
+        DCVSVX( I ) = DSQRT( DATCVM( I, I ) )
+      ENDDO
+C
 C Calculate the true mean and add the required mean.
 C (I think the mean should be zero out of IRLSRA - but it doesn't
 C hurt to calculate it again.)
@@ -165,6 +173,12 @@ c     NABSVL = NLSP
         RETURN
       ENDIF
 C
+C Now put the sqrt( diagonals ) of the covariance matrix into DCVSVY
+C
+      DO I = 1, NABSVL
+        DCVSVY( I ) = DSQRT( DATCVM( I, I ) )
+      ENDDO
+C
       DSCALE = 1.0d0/DBLE( NABSVL )
       DTRUEM = 0.0d0
       DO I = 1, NABSVL
@@ -177,5 +191,4 @@ C
       RETURN
       END
 C
-
 
