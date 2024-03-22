@@ -106,6 +106,12 @@ C
       INTEGER        LUIN
 C
       REAL*8         DCOVEL
+C
+      REAL*8         DRESPE( NEVMAX )
+      REAL*8         DRESPS( NSPMAX )
+      INTEGER        NRESPE( NEVMAX )
+      INTEGER        NRESPS( NSPMAX )
+C
       REAL*8         DREQMX
       REAL*8         DREQMY
       REAL*8         DSCALE
@@ -243,11 +249,29 @@ C
      1        ' avg ',f20.4)
 c    1             CSTARR, LSTARR, CPHARR, LPHARR,
 c    2             DSTLAT, DSTLON, DRFLAT, DRFLON,
+C
+      DO I = 1, NLSP
+        ISP           = INDLSP( I )
+        DSXARR( ISP ) = DABSVX( I )
+        DSYARR( ISP ) = DABSVY( I )
+      ENDDO
+      CALL CALCRA( IERR, NLEV, NEV,
+     1             INDLEV, NSP, NRELVL, IE1ARR, IE2ARR, ISPARR,
+     2             DE1ARR, DE2ARR, DSXARR, DSYARR,
+     3             DRXARR, DRYARR, DRESPE, DRESPS,
+     4             NRESPE, NRESPS )
+      IF ( IERR.NE.0 ) THEN
+        WRITE (6,*) 'CALCRA returned IERR = ', IERR
+        CMESS  = 'Error from CALCRA '
+        GOTO 99
+      ENDIF
+C
 
       DO I = 1, NLSP
         ISP = INDLSP( I )
-        DCOVEL = DSQRT( DCVSVX( I )*DCVSVX( I ) +
-     1                  DCVSVY( I )*DCVSVY( I )  )
+        DCOVEL = DRESPS( ISP )/NRESPS( ISP )
+c       DCOVEL = DSQRT( DCVSVX( I )*DCVSVX( I ) +
+c    1                  DCVSVY( I )*DCVSVY( I )  )
         WRITE (6,81) CSTARR( ISP )(1:LSTARR( ISP ) ),
      1               CPHARR( ISP )(1:LPHARR( ISP ) ),
      2               DSTLAT( ISP ), DSTLON( ISP ),

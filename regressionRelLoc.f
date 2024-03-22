@@ -132,6 +132,11 @@ C
       REAL*8         DREQMY
       REAL*8         DSCALE
 C
+      REAL*8         DRESPE( NEVMAX )
+      REAL*8         DRESPS( NSPMAX )
+      INTEGER        NRESPE( NEVMAX )
+      INTEGER        NRESPS( NSPMAX )
+C
       REAL*8         DCOVEL
       REAL*8         DTOTNM
       REAL*8         DNRM2
@@ -323,6 +328,17 @@ C     .
         GOTO 99
       ENDIF
 C
+      CALL CALCRA( IERR, NLEV, NEV,
+     1             INDLEV, NSP, NRELVL, IE1ARR, IE2ARR, ISPARR,
+     2             DE1ARR, DE2ARR, DSXARR, DSYARR,
+     3             DRXARR, DRYARR, DRESPE, DRESPS,
+     4             NRESPE, NRESPS )
+      IF ( IERR.NE.0 ) THEN
+        WRITE (6,*) 'CALCRA returned IERR = ', IERR
+        CMESS  = 'Error from CALCRA '
+        GOTO 99
+      ENDIF
+C
 C Now we need to calculate the differences between the
 C previous and the current iterations
 C
@@ -351,8 +367,9 @@ C
      1        ' avg ',f20.4)
 C
       DO ISP = 1, NSP
-        DCOVEL = DSQRT( DCVMSX( ISP )*DCVMSX( ISP ) +
-     1                  DCVMSY( ISP )*DCVMSY( ISP )  )
+        DCOVEL = DRESPS( ISP )/NRESPS( ISP )
+c       DCOVEL = DSQRT( DCVMSX( ISP )*DCVMSX( ISP ) +
+c    1                  DCVMSY( ISP )*DCVMSY( ISP )  )
         WRITE (6,71) ITER,
      1               CSTARR( ISP )(1:LSTARR( ISP ) ),
      2               CPHARR( ISP )(1:LPHARR( ISP ) ),
@@ -365,8 +382,9 @@ C
      1               f13.8,1X,f13.8,1X,f13.8)
 C
       DO IEV = 1, NLEV
-        DCOVEL = DSQRT( DCVMEX( IEV )*DCVMEX( IEV ) +
-     1                  DCVMEY( IEV )*DCVMEY( IEV )  )
+        DCOVEL = DRESPE( IEV )/NRESPE( IEV )
+c       DCOVEL = DSQRT( DCVMEX( IEV )*DCVMEX( IEV ) +
+c    1                  DCVMEY( IEV )*DCVMEY( IEV )  )
         WRITE (6,81) ITER, CEVARR( IEV )(1:LEVARR( IEV ) ),
      1               DRXARR( IEV ), DRYARR( IEV ),
      2               DCOVEL

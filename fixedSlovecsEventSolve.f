@@ -99,6 +99,11 @@ C
       REAL*8         DCVMEX( NEVMAX )
       REAL*8         DCVMEY( NEVMAX )
 C
+      REAL*8         DRESPE( NEVMAX )
+      REAL*8         DRESPS( NSPMAX )
+      INTEGER        NRESPE( NEVMAX )
+      INTEGER        NRESPS( NSPMAX )
+C
       REAL*8         DCOVEL
 C
       INTEGER        I
@@ -258,9 +263,26 @@ C
  82   FORMAT('Observation ',I6,' uses ',I8,' cres ',f20.4,
      1        ' avg ',f20.4)
       DO I = 1, NLEV
-        IEV = INDLEV( I )
-        DCOVEL = DSQRT( DCVMEX( I )*DCVMEX( I ) +
-     1                  DCVMEY( I )*DCVMEY( I )  )
+        IEV           = INDLEV( I )
+        DRXARR( IEV ) = DABSVX( I )
+        DRYARR( IEV ) = DABSVY( I )
+      ENDDO
+      CALL CALCRA( IERR, NLEV, NEV,
+     1             INDLEV, NSP, NRELVL, IE1ARR, IE2ARR, ISPARR,
+     2             DE1ARR, DE2ARR, DSXARR, DSYARR,
+     3             DRXARR, DRYARR, DRESPE, DRESPS,
+     4             NRESPE, NRESPS )
+      IF ( IERR.NE.0 ) THEN
+        WRITE (6,*) 'CALCRA returned IERR = ', IERR
+        CMESS  = 'Error from CALCRA '
+        GOTO 99
+      ENDIF
+C
+      DO I = 1, NLEV
+        IEV    = INDLEV( I )
+        DCOVEL = DRESPE( IEV )/NRESPE( IEV )
+c       DCOVEL = DSQRT( DCVMEX( I )*DCVMEX( I ) +
+c    1                  DCVMEY( I )*DCVMEY( I )  )
         WRITE (6,81) CEVARR( IEV )(1:LEVARR( IEV ) ),
      1               DABSVX( I ), DABSVY( I ),
      2               DCOVEL
