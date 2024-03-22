@@ -32,4 +32,8 @@ chmod 755 run_Finland_abs_events.sh
 chmod 755 run_DPRK_regressionRelLoc.sh
 chmod 755 run_Finland_regressionRelLoc.sh
 chmod 755 run_DPRK12345_regressionRelLoc.sh
-chmod 755 run_DPRK_abs_eventsTELE.sh
+chmod 755 run_DPRK_abs_eventsAK135.sh
+chmod 755 run_DPRK_abs_eventsCORRECTED.sh
+chmod 755 run_Finland_abs_eventsAK135.sh
+chmod 755 run_Finland_abs_eventsREGRELLOC.sh
+
