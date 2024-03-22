@@ -365,8 +365,8 @@ C
      1               f13.8,1X,f13.8,1X,f13.8)
 C
       DO IEV = 1, NLEV
-        DCOVEL = DSQRT( DCVMEX( ISP )*DCVMEX( ISP ) +
-     1                  DCVMEY( ISP )*DCVMEY( ISP )  )
+        DCOVEL = DSQRT( DCVMEX( IEV )*DCVMEX( IEV ) +
+     1                  DCVMEY( IEV )*DCVMEY( IEV )  )
         WRITE (6,81) ITER, CEVARR( IEV )(1:LEVARR( IEV ) ),
      1               DRXARR( IEV ), DRYARR( IEV ),
      2               DCOVEL
