@@ -73,6 +73,7 @@ C
       INTEGER            ILEVB
       INTEGER            NABSVL
       LOGICAL            OSOLVE
+      REAL*8             DSCALE
       REAL*8             DRESVN
       REAL*8             DXBMXA
       REAL*8             DYBMYA
@@ -125,10 +126,11 @@ C           .
         ENDDO
       ENDDO
       NPAIRS = IPAIR
+      NABSVL = NLEV
+      DSCALE = 1.0d0/DBLE( NABSVL )
 C
 C     OK we should have all our relative X and Y values now.
 C
-      NABSVL = NLEV
       CALL IRLSRA( IERR, NABSVL, NPAIRS, LDATCM, IFIXLE,
      1             IABSVL, JABSVL, DRELVX, DWGHTA, DRELRX,
      2             DABSVX, DATCVM,
@@ -140,11 +142,25 @@ C
         RETURN
       ENDIF
 C
-C Now put the sqrt( diagonals ) of the covariance matrix into DCVSVX
+C Put the cumulative residual relating to each absolute value
 C
-      DO I = 1, NABSVL
-        DCVSVX( I ) = DSQRT( DATCVM( I, I ) )
-      ENDDO
+       DO I = 1, NABSVL
+         DCVSVX( I ) = 0.0d0
+       ENDDO
+       DO IPAIR = 1, NPAIRS
+         ILEVA  = IABSVL( IPAIR  )
+         ILEVB  = JABSVL( IPAIR  )
+         DCVSVX( ILEVA ) = DCVSVX( ILEVA ) +
+     1                       DABS( DRELRX( IPAIR ) )*DSCALE
+         DCVSVX( ILEVB ) = DCVSVX( ILEVB ) +
+     1                       DABS( DRELRX( IPAIR ) )*DSCALE
+       ENDDO
+cC
+cC Now put the sqrt( diagonals ) of the covariance matrix into DCVSVX
+cC
+c      DO I = 1, NABSVL
+c        DCVSVX( I ) = DSQRT( DATCVM( I, I ) )
+c      ENDDO
 C
 c     NABSVL = NLEV
       CALL IRLSRA( IERR, NABSVL, NPAIRS, LDATCM, IFIXLE,
@@ -158,11 +174,25 @@ c     NABSVL = NLEV
         RETURN
       ENDIF
 C
-C Now put the sqrt( diagonals ) of the covariance matrix into DCVSVY
+C Put the cumulative residual relating to each absolute value
 C
-      DO I = 1, NABSVL
-        DCVSVY( I ) = DSQRT( DATCVM( I, I ) )
-      ENDDO
+       DO I = 1, NABSVL
+         DCVSVY( I ) = 0.0d0
+       ENDDO
+       DO IPAIR = 1, NPAIRS
+         ILEVA  = IABSVL( IPAIR  )
+         ILEVB  = JABSVL( IPAIR  )
+         DCVSVY( ILEVA ) = DCVSVY( ILEVA ) +
+     1                       DABS( DRELRY( IPAIR ) )*DSCALE
+         DCVSVY( ILEVB ) = DCVSVY( ILEVB ) +
+     1                       DABS( DRELRY( IPAIR ) )*DSCALE
+       ENDDO
+cC
+cC Now put the sqrt( diagonals ) of the covariance matrix into DCVSVY
+cC
+c      DO I = 1, NABSVL
+c        DCVSVY( I ) = DSQRT( DATCVM( I, I ) )
+c      ENDDO
 C
       RETURN
       END
