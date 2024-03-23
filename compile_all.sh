@@ -36,4 +36,5 @@ chmod 755 run_DPRK_abs_eventsAK135.sh
 chmod 755 run_DPRK_abs_eventsCORRECTED.sh
 chmod 755 run_Finland_abs_eventsAK135.sh
 chmod 755 run_Finland_abs_eventsREGRELLOC.sh
-
+chmod 755 XY2LATLON/run_xy2latlon.sh
+chmod 755 XY2LATLON/xy2latlon.py
