@@ -108,17 +108,21 @@ def read_xyfile( filename, reflat, reflon ):
     infile = open( filename, 'r' )
     Locs   = []
     for line in infile:
-        words = line.split()
-        evid  = words[0]
-        xkm   = float( words[1] )
-        ykm   = float( words[2] )
+        words  = line.split()
+        evid   = words[0]
+        xkm    = float( words[1] )
+        ykm    = float( words[2] )
+        value  = float( words[3] )
         evloc = llLocation( reflat, reflon )
         evloc.incxy( xkm, ykm )
         lat = evloc.lat
         lon = evloc.lon
         latstring = "{:.4f}".format(     lat ).rjust( 9)
         lonstring = "{:.4f}".format(     lon ).rjust(10)
-        print( evid, latstring, lonstring )
+        xkmstring = "{:.4f}".format(     xkm ).rjust( 8)
+        ykmstring = "{:.4f}".format(     ykm ).rjust( 8)
+        valstring = "{:.4f}".format(   value ).rjust( 8)
+        print( evid, latstring, lonstring, xkmstring, ykmstring, valstring )
 
 #
 scriptname = sys.argv[0]
