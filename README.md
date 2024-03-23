@@ -65,6 +65,10 @@ sh compile_all.sh
 
 The software has been tested using gfortran Ubuntu 11.4.0-1ubuntu1~22.04.
 
+All programs use only Cartesian coordinates (rx,ry) for the event locations and (sx,sy) for the slowness vectors.  
+
+We need to generate the slowness vectors, for example using the program *statphase2slowvec* (https://github.com/stevenjgibbons/statphase2slowvec) and we provide in this repository a little auxiliary program *xy2latlon* to transform from the x, y event coordinates to latitude and longitude.  
+
 
 
 **References**  
