@@ -287,7 +287,7 @@ c    1                  DCVMEY( I )*DCVMEY( I )  )
      1               DABSVX( I ), DABSVY( I ),
      2               DCOVEL
       ENDDO
- 81   FORMAT(A,' ',f10.4,1X,f10.4,1X,f10.4 )
+ 81   FORMAT(A,' ',f12.6,1X,f12.6,1X,f12.6 )
 c     WRITE (6,81) CTAREB(1:LTAREB), CTARER(1:LTARER),
 c    1             DXBMXA, DYBMYA, ND, DRESVN
 c81   FORMAT(A,' minus ',A,1X,f10.4,1X,f10.4,1X,I4,1X,f20.4)

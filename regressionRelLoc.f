@@ -389,7 +389,7 @@ c    1                  DCVMEY( IEV )*DCVMEY( IEV )  )
      1               DRXARR( IEV ), DRYARR( IEV ),
      2               DCOVEL
       ENDDO
- 81   FORMAT('Iter ',I5,1X,A,1X,f10.4,1X,f10.4,1X,f10.4)
+ 81   FORMAT('Iter ',I5,1X,A,1X,f12.6,1X,f12.6,1X,f12.6)
 C
       IF ( ITER.GE.MXITER ) THEN
         WRITE (6,*) 'MXITER iterations exceeded.'
