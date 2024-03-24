@@ -5,6 +5,14 @@ A suite of programs for calculating the relative locations of seismic events and
 
 [![SQAaaS badge shields.io](https://img.shields.io/badge/sqaaas%20software-bronze-e6ae77)](https://api.eu.badgr.io/public/assertions/ncpA6jz6S9ajG8uvSar2rg "SQAaaS bronze badge achieved")  
 
+The main program for iterative solution of both locations and slowness vectors, from an initial specification of slowness vectors, is called regressionRelLoc.  
+The program fixedSlovecsEventSolve solves for a set of events for a given set of fixed slowness vectors.  
+The program fixedEventsSlovecsSolve solves for the optimal slowness vectors for a given set of event locations.  
+(regressionRelLoc basically iterates between the operations performed in fixedSlovecsEventSolve and the operations performed in fixedEventsSlovecsSolve.)  
+There are two additional programs, oneEventPairVectorSolve and oneSlovecPairVectorSolve, which were basically written for unit testing of the operations in regressionRelLoc.  
+Before we call the codes, we need to define a set of slowness vectors. The program statphase2slowvec (https://github.com/stevenjgibbons/statphase2slowvec) will calculate the slowness vectors for a set of stations and phases using the ak135 model.  
+The Cartesian output can be transformed back to geographical space using the [xy2latlon.py](https://github.com/stevenjgibbons/regressionRelLoc/blob/main/XY2LATLON/xy2latlon.py) program in this repository.  
+
 There are two example cases:  
 
 (1) The relative location benchmark study of Gibbons et al. (2020), consisting of 55 surface explosions in northern Finland.  
