@@ -117,8 +117,8 @@ def read_xyfile( filename, reflat, reflon ):
         evloc.incxy( xkm, ykm )
         lat = evloc.lat
         lon = evloc.lon
-        latstring = "{:.4f}".format(     lat ).rjust( 9)
-        lonstring = "{:.4f}".format(     lon ).rjust(10)
+        latstring = "{:.6f}".format(     lat ).rjust(11)
+        lonstring = "{:.6f}".format(     lon ).rjust(12)
         xkmstring = "{:.4f}".format(     xkm ).rjust( 8)
         ykmstring = "{:.4f}".format(     ykm ).rjust( 8)
         valstring = "{:.4f}".format(   value ).rjust( 8)
