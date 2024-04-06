@@ -17,13 +17,15 @@ PROGNAME2= oneEventPairVectorSolve
 PROGNAME3= oneSlovecPairVectorSolve
 PROGNAME4= fixedSlovecsEventSolve
 PROGNAME5= fixedEventsSlovecsSolve
+PROGNAME6= checkcircvc
 #
 ALLSOURCECODE=  \
    $(PROGNAME1).f   \
    $(PROGNAME2).f   \
    $(PROGNAME3).f   \
    $(PROGNAME4).f   \
-   $(PROGNAME5).f  
+   $(PROGNAME5).f   \
+   $(PROGNAME6).f  
 #
 SOURCES= \
         $(ALLSOURCECODE)
@@ -34,6 +36,7 @@ EXEFILE2= $(BINDIR)/$(PROGNAME2)
 EXEFILE3= $(BINDIR)/$(PROGNAME3)
 EXEFILE4= $(BINDIR)/$(PROGNAME4)
 EXEFILE5= $(BINDIR)/$(PROGNAME5)
+EXEFILE6= $(BINDIR)/$(PROGNAME6)
 FORTRAN= gfortran
 #
 LIBDIR=  .
@@ -57,3 +60,5 @@ $(PROGNAME4):	$(PROGNAME4).f $(LIBS)
 	$(FORTRAN) -o $(EXEFILE4) $(PROGNAME4).f $(LIBS) $(OPTIM)
 $(PROGNAME5):	$(PROGNAME5).f $(LIBS)
 	$(FORTRAN) -o $(EXEFILE5) $(PROGNAME5).f $(LIBS) $(OPTIM)
+$(PROGNAME6):	$(PROGNAME6).f $(LIBS)
+	$(FORTRAN) -o $(EXEFILE6) $(PROGNAME6).f $(LIBS) $(OPTIM)
