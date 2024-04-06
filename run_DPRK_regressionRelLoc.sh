@@ -1,6 +1,7 @@
 #!/bin/sh
-dtol=0.001
-mxiter=100
+dtol=0.004 
+mxiter=10000
+dslowm=0.015
 program=regressionRelLoc
 exe=./bin/${program}
 if test ! -r ${exe}
@@ -22,6 +23,7 @@ fi
 refevent=$1
 evdir=DPRKfiles
 slovecsfile=${evdir}/DPRK_ak135_slovecs.txt
+# slovecsfile=${evdir}/DPRK12345slow.txt
 locationsfile=${evdir}/DPRK_events_zero.txt
 reltimesfile=${evdir}/DPRK_clean_allCC.txt
 for file in \
@@ -44,5 +46,7 @@ then
 fi
 cp ${slovecsfile} ${infile}
 cat ${locationsfile} >> ${infile}
+# grep -v DPRK6 ${reltimesfile}  >> ${infile}
 cat ${reltimesfile}  >> ${infile}
-${exe} ${nsp} ${nev} ${refevent} ${dtol} ${mxiter} < ${infile}
+# ${exe} ${nsp} ${nev} ${refevent} ${dtol} ${mxiter} ${dslowm} < ${infile} 
+${exe} ${nsp} ${nev} ${refevent} ${dtol} ${mxiter} ${dslowm} < ${infile} | grep -v resid_diff | grep -v Obse 

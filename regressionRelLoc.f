@@ -4,7 +4,7 @@ C NGI
 C
 C regression Relative Location
 C
-C Takes 5 input arguments NEV NSP chrefev dtol mxiter
+C Takes 6 input arguments NEV NSP chrefev dtol mxiter dslowm
 C
       PROGRAM regressionRelLoc
       IMPLICIT NONE
@@ -43,6 +43,9 @@ C
       REAL*8        DSYAPR( NSPMAX )
       REAL*8        DSXADF( NSPMAX )
       REAL*8        DSYADF( NSPMAX )
+      REAL*8        DSXAR0( NSPMAX )
+      REAL*8        DSYAR0( NSPMAX )
+      REAL*8        DSLOWM
 C
       CHARACTER*(24) CEVARR( NEVMAX )
       INTEGER        LEVARR( NEVMAX )
@@ -145,9 +148,9 @@ C
 C
       CMESS   = ' '
       NIARGS  = IARGC()
-      IF ( NIARGS.NE.5 ) THEN
-        WRITE (6,*) 'Usage:  NSP  NEV  EVENTA  DTOL  MXITER  '
-        WRITE (6,*) '        111   6   DPRK2   0.001  100    '
+      IF ( NIARGS.NE.6 ) THEN
+        WRITE (6,*) 'Usage:  NSP  NEV  EVENTA  DTOL  MXITER  DSLOWM'
+        WRITE (6,*) '        111   6   DPRK2   0.001  100     0.025 '
         CALL EXIT(1)
       ENDIF
 C
@@ -197,12 +200,19 @@ C
       CALL GETARG( IARG, CHARG )
       READ ( CHARG, *, ERR=99, END=99 ) MXITER
 C
+      CHARG  = ' '
+      IARG   = 6
+      CMESS  = 'Error reading integer DSLOWM'
+      CALL GETARG( IARG, CHARG )
+      READ ( CHARG, *, ERR=99, END=99 ) DSLOWM
+C
       print *,' nsp     = ', nsp
       print *,' nev     = ', nev
       print *,' ltarer  = ', ltarer
       print *,' ctarer  = ', ctarer
       print *,' dtol    = ', dtol
       print *,' mxiter  = ', mxiter
+      print *,' dslowm  = ', dslowm
 C
 C Now read those lines of the input file for the NSP slowness vectors
 C
@@ -217,6 +227,14 @@ C
         GOTO 99
       ENDIF
       print *,' NSP slowness vectors read.'
+C
+C Copy the slowness vectors into DSXAR0 and DSYAR0 for
+C use as stopping criteria
+C
+      DO I = 1, NSP
+        DSXAR0( I ) = DSXARR( I )
+        DSYAR0( I ) = DSYARR( I )
+      ENDDO
 C
 C Now read those lines of the input file for the NEV events
 C
@@ -321,7 +339,7 @@ C     .
      5             JABSVL, DRELVX, DRELVY, DABSEX, DABSEY, DABSSX,
      6             DABSSY, DWGHTA, DRELRX, DRELRY, LDATCM, DATCVM,
      7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY,
-     8             DCVMEX, DCVMEY, DCVMSX, DCVMSY )
+     8          DCVMEX, DCVMEY, DCVMSX, DCVMSY, DSXAR0, DSYAR0, DSLOWM )
       IF ( IERR.NE.0 ) THEN
         WRITE (6,*) 'OIESVF returned IERR = ', IERR
         CMESS  = 'Error from OIESVF '

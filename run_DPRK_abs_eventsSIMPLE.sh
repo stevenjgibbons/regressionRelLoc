@@ -1,16 +1,12 @@
 #!/bin/sh
-# Removes DPRK6
-dtol=0.0055
-mxiter=10000
-DSLOWM=0.025
-program=regressionRelLoc
+program=fixedSlovecsEventSolve
 exe=./bin/${program}
 if test ! -r ${exe}
 then
   echo "No program ${exe} found ... "
   exit 1
 fi
-scriptname=./run_DPRK12345_regressionRelLoc.sh
+scriptname=./run_DPRK_abs_eventsSIMPLE.sh
 if [ $# != 1 ]
 then
   echo
@@ -23,7 +19,9 @@ fi
 #
 refevent=$1
 evdir=DPRKfiles
-slovecsfile=${evdir}/DPRK_ak135_slovecs.txt
+slovecsfile=${evdir}/dprkslow_simple.txt
+# slovecsfile=${evdir}/DPRK_ak135_slovecs.txt
+# slovecsfile=${evdir}/DPRK12345slow.txt
 locationsfile=${evdir}/DPRK_events_zero.txt
 reltimesfile=${evdir}/DPRK_clean_allCC.txt
 for file in \
@@ -38,14 +36,13 @@ do
   fi
 done
 nsp=`wc ${slovecsfile} | awk '{print $1}'`
-# nev=`wc ${locationsfile} | awk '{print $1}'`
-nev=5
+nev=`wc ${locationsfile} | awk '{print $1}'`
 infile=${program}.input
 if test -r ${infile}
 then
   mv ${infile} ${infile}.old
 fi
 cp ${slovecsfile} ${infile}
-grep -v DPRK6 ${locationsfile} >> ${infile}
-grep -v DPRK6 ${reltimesfile}  >> ${infile}
-${exe} ${nsp} ${nev} ${refevent} ${dtol} ${mxiter} ${DSLOWM} < ${infile} | grep -v resid_diff | grep -v dxj-dxi | grep -v dxb-dxa | grep -v Observation
+cat ${locationsfile} >> ${infile}
+cat ${reltimesfile}  >> ${infile}
+${exe} ${nsp} ${nev} ${refevent} < ${infile}

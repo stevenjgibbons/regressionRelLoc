@@ -11,12 +11,14 @@ make oneSlovecPairVectorSolve
 make fixedSlovecsEventSolve
 make fixedEventsSlovecsSolve
 make regressionRelLoc
+make checkcircvc
 for file in \
    bin/oneEventPairVectorSolve \
    bin/oneSlovecPairVectorSolve \
    bin/fixedSlovecsEventSolve \
    bin/fixedEventsSlovecsSolve \
-   bin/regressionRelLoc
+   bin/regressionRelLoc \
+   bin/checkcircvc
 do
   if test ! -r $file
   then
