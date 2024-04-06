@@ -113,6 +113,7 @@ C       .
         ENDDO
         CALL MDPVUN( ND, DWORK1 )
 C       .
+c       print *,' lda, nd, nm, nmmax ',LDA, ND, NM, NMMAX
         CALL SIWMPS( IERR, LDA, ND, NM, NMMAX,
      1               DDVEC, DAMAT, DTEMP1, DMVEC, DRESV,
      2               LWORK, LWOPT, DWORK1, DWORK2, DWORK3,
@@ -123,6 +124,8 @@ C       .
           WRITE (6,*) 'SIWMPS returned IERR = ', IERR
           RETURN
         ENDIF
+C       .
+c       print *,' dmvec ',DMVEC(1), DMVEC(2), DMVEC(3), DMVEC(4)
 C       .
 C       . Put the difference between the old residuals and the
 C       . new into DWORK1 as we do not need this array right now

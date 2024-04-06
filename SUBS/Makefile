@@ -1,7 +1,9 @@
 #
 ALLSOURCECODE=  \
 	abssvf.f \
+	ansvwo.f \
 	calcra.f \
+	circvc.f \
 	csargm.f \
 	dtlnrd.f \
 	eabslf.f \

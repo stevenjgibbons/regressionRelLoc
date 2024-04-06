@@ -57,7 +57,7 @@ C
       IERR   = 0
       IF ( ILEVA.EQ.ILEVB .OR. ILEVA.LT.1 .OR. ILEVA.GT.NLEV .OR.
      1     ILEVB.LT.1     .OR. ILEVB.GT.NLEV ) THEN
-        WRITE (6,*) 'Error in routine OSEVPS )'
+        WRITE (6,*) 'Error in routine OSEVRW )'
         WRITE (6,*) 'ILEVA  = ', ILEVA
         WRITE (6,*) 'ILEVB  = ', ILEVB
         WRITE (6,*) 'NLEV   = ', NLEV
@@ -68,7 +68,7 @@ C
       IEVB   = INDLEV( ILEVB )
       IF(     IEVA.LT.1 .OR. IEVA.GT.NEV  .OR.
      1        IEVB.LT.1 .OR. IEVB.GT.NEV ) THEN
-        WRITE (6,*) 'Error in routine OSEVPS )'
+        WRITE (6,*) 'Error in routine OSEVRW )'
         WRITE (6,*) 'IEVA  = ', IEVA
         WRITE (6,*) 'IEVB  = ', IEVB
         WRITE (6,*) 'NEV   = ', NEV

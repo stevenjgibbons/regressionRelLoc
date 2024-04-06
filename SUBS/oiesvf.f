@@ -24,7 +24,7 @@ C
      5             JABSVL, DRELVX, DRELVY, DABSEX, DABSEY, DABSSX,
      6             DABSSY, DWGHTA, DRELRX, DRELRY, LDATCM, DATCVM,
      7             DWORK2, DOLDR2, NUMOU, DCRES, DREQMX, DREQMY,
-     8             DCVMEX, DCVMEY, DCVMSX, DCVMSY )
+     8          DCVMEX, DCVMEY, DCVMSX, DCVMSY, DSXAR0, DSYAR0, DSLOWM )
       IMPLICIT NONE
 C
       INTEGER            IERR
@@ -84,15 +84,41 @@ C
       REAL*8             DCVMEY( NLEV )
       REAL*8             DCVMSX( NLSP )
       REAL*8             DCVMSY( NLSP )
+      REAL*8             DSXAR0( NSP )
+      REAL*8             DSYAR0( NSP )
+      REAL*8             DSLOWM
 C
       INTEGER            IEV
       INTEGER            ILEV
       INTEGER            ISP
       INTEGER            ILSP
+      REAL*8             DLEN
+      REAL*8             DLENTL
+      REAL*8             DLENTA
+      REAL*8             DRATIO
+C
+      REAL*8             DSX
+      REAL*8             DSUMSX
+      REAL*8             DELSX
+      REAL*8             DSY
+      REAL*8             DSUMSY
+      REAL*8             DELSY
+      REAL*8             DTORQ
 C
       IERR   = 0
 C
-C First we need to call EABSLF:
+C First we calculate the total length of the slowness vectors.
+C We will ultimately scale the output slowness vectors to that
+C the total length is unchanged.
+C
+      DLENTL = 0.0d0
+      DO ISP = 1, NSP
+        DLEN   = DSQRT(   DSXARR(ISP)*DSXARR(ISP)      +
+     1                    DSYARR(ISP)*DSYARR(ISP)   )
+        DLENTL = DLENTL + DLEN
+      ENDDO
+C
+C Now we need to call EABSLF:
 C
       CALL EABSLF( IERR, NLEV, IFIXLE, NEV, INDLEV, NSP, NPAIRM,
      1             ITER, NRELVL, IE1ARR, IE2ARR, ISPARR, DE1ARR, DE2ARR,
@@ -154,13 +180,59 @@ C
         DATCVM( 2, ILSP ) = DCVMSY( ILSP )
       ENDDO
 C
+      DTORQ  = 0.0d0
+      DSUMSX = 0.0d0
+      DSUMSY = 0.0d0
+      DO ILSP = 1, NLSP
+        ISP           = INDLSP( ILSP )
+        DSX           = DSXARR( ISP )
+        DSUMSX        = DSUMSX         + DSX
+        DELSX         = DABSSX( ILSP ) - DSX
+        DSY           = DSYARR( ISP )
+        DSUMSY        = DSUMSY         + DSY
+        DELSY         = DABSSY( ILSP ) - DSY
+        DTORQ         = DTORQ + DSX*DELSY - DSY*DELSX
+        DCVMSX( ISP ) = DATCVM( 1, ILSP )
+        DCVMSY( ISP ) = DATCVM( 2, ILSP )
+      ENDDO
+      PRINT *,'bef TORQUE, DSUMSX, DSUMSY = ', DTORQ, DSUMSX, DSUMSY
+C
+C Now try to "align" the new values with the old ...
+C
+      CALL ANSVWO( IERR, NSP, NLSP, INDLSP,
+     1             DSXARR, DSYARR, DABSSX, DABSSY,
+     2             DSXAR0, DSYAR0, DSLOWM )
+      IF ( IERR.NE.0 ) THEN
+        WRITE (6,*) 'Subroutine OIESVF. Error from ANSVWO.'
+        IERR   = 1
+        RETURN
+      ENDIF
+C
+C Now recalculate sums and torque and refill DSXARR, DSYARR
+C
       DO ILSP = 1, NLSP
         ISP           = INDLSP( ILSP )
         DSXARR( ISP ) = DABSSX( ILSP )
         DSYARR( ISP ) = DABSSY( ILSP )
-        DCVMSX( ISP ) = DATCVM( 1, ILSP )
-        DCVMSY( ISP ) = DATCVM( 2, ILSP )
       ENDDO
+C
+C Now we calculate the total length of the new slowness vectors.
+C
+      DLENTA = 0.0d0
+      DO ISP = 1, NSP
+        DLEN   = DSQRT(   DSXARR(ISP)*DSXARR(ISP)      +
+     1                    DSYARR(ISP)*DSYARR(ISP)   )
+        DLENTA = DLENTA + DLEN
+      ENDDO
+C
+      DRATIO = DLENTL/DLENTA
+C
+C Now we scale the vectors by this factor
+C
+c     DO ISP = 1, NSP
+c       DSXARR( ISP ) = DSXARR( ISP )*DRATIO
+c       DSYARR( ISP ) = DSYARR( ISP )*DRATIO
+c     ENDDO
 C
       RETURN
       END

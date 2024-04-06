@@ -139,6 +139,11 @@ C
       INTEGER     ID
       INTEGER     LUOUT
 C
+      REAL*8      DWGMAX
+      REAL*8      DWGCC
+      REAL*8      DWGDIS
+      REAL*8      DWGFAC
+C
       REAL*8      DNRM2
       INTEGER     INCX
       PARAMETER ( INCX = 1 )
@@ -167,6 +172,7 @@ C
       ENDIF
 C
       ND     = 0
+      DWGMAX = 0.0d0
       DO IRELVL = 1, NRELVL
         IF (     ISPARR( IRELVL ).EQ.ISPI       ) THEN
           DTIA   = DE1ARR( IRELVL )
@@ -198,7 +204,11 @@ C
               DAMAT( ND, 1 ) = DRXB - DRXA
               DAMAT( ND, 2 ) = DRYB - DRYA
               DAMAT( ND, 3 ) = 1.0d0
-              DWEIG( ND )    = 0.5d0*( DABS(DCCI)+DABS(DCCJ) ) + 0.01d0
+              DWGCC          = 0.5d0*( DABS(DCCI)+DABS(DCCJ) ) + 0.01d0
+              DWGDIS         = DAMAT( ND, 1 )**2 + DAMAT( ND, 2 )**2
+              DWGFAC         = DWGCC*DWGDIS
+              IF ( DWGFAC.GT.DWGMAX ) DWGMAX = DWGFAC
+              DWEIG( ND )    = DWGFAC
               IOBS( ND )     = IRELVL
               JOBS( ND )     = JRELVL
             ENDIF
@@ -215,6 +225,27 @@ c       WRITE (6,*) 'ILSPI  = ', ILSPI
 c       WRITE (6,*) 'ILSPJ  = ', ILSPJ
         RETURN
       ENDIF
+C     .
+C     . We just need to make sure that our weights are well-behaved
+C     . If they are all zero, then we make them all unity.
+C     . If they are not all zero, we add 20% of the maximum to
+C     . all weights to ensure that none end up zero.
+C     .
+      IF ( DWGMAX.LT.DTOL ) THEN
+        DO ID = 1, ND
+          DWEIG( ID )  = 1.0d0
+        ENDDO
+      ELSE
+        DWGFAC = DWGMAX*0.2d0
+        DO ID = 1, ND
+          DWEIG( ID )  = DWEIG( ID )  + DWGFAC
+        ENDDO
+      ENDIF
+C     .
+C     . Now that the weights cannot be zero, we can normalize
+C     . the weights.
+C     .
+      CALL MDPVUN( ND, DWEIG )
 C     .
 C  ( Ax, Ay, 1 ) * ( sxj-sxi , syj-syi , C )^T = ( ti,b - tj,b) - (ti,a - tj,a )
 C  where our matrix elements Ax and Ay are given by
