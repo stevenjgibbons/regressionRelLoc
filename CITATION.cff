@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-  - given-names: Steven John
-    family-names: Gibbons
+  - family-names: Gibbons
+    given-names: Steven John
     email: steven.gibbons@ngi.no
     affiliation: Norwegian Geotechnical Institute
     orcid: "https://orcid.org/0000-0002-7822-0244"
@@ -11,4 +11,3 @@ version: v1.0.2
 type: software
 date-released: 2024-04-07
 url: "https://github.com/stevenjgibbons/regressionRelLoc"
-license: GNU General Public License v3.0
