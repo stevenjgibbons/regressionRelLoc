@@ -3,7 +3,8 @@ message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Gibbons"
   given-names: "Steven John"
-orcid: https://orcid.org/0000-0002-7822-0244
+  orcid: "https://orcid.org/0000-0002-7822-0244"
 title: "regressionRelLoc"
 version: v1.0.2
 date-released: 2024-04-15
+license: gpl-3.0
