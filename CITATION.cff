@@ -5,6 +5,7 @@ authors:
   given-names: "Steven John"
   orcid: "https://orcid.org/0000-0002-7822-0244"
 title: "regressionRelLoc"
-version: v1.0.2
-date-released: 2024-04-15
+version: v1.0.3
+DOI: https://doi.org/10.5281/zenodo.11046217
+date-released: 2024-04-23
 license: gpl-3.0
