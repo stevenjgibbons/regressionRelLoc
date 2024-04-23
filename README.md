@@ -5,6 +5,12 @@ A suite of programs for calculating the relative locations of seismic events and
 
 [![SQAaaS badge shields.io](https://img.shields.io/badge/sqaaas%20software-bronze-e6ae77)](https://api.eu.badgr.io/public/assertions/ncpA6jz6S9ajG8uvSar2rg "SQAaaS bronze badge achieved")  
 
+Release v1.0.3 is permanently stored on Zenodo with DOI https://doi.org/10.5281/zenodo.11046217  
+
+https://zenodo.org/doi/10.5281/zenodo.11046216  
+
+[![DOI](https://zenodo.org/badge/773051705.svg)](https://zenodo.org/doi/10.5281/zenodo.11046216)  
+
 The main program for iterative solution of both locations and slowness vectors, from an initial specification of slowness vectors, is called regressionRelLoc.  
 The program fixedSlovecsEventSolve solves for a set of events for a given set of fixed slowness vectors.  
 The program fixedEventsSlovecsSolve solves for the optimal slowness vectors for a given set of event locations.  
